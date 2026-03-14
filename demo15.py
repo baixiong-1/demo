@@ -5,9 +5,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 import streamlit as st
 
-col11, col22,col33 = st.columns([1.2,1,1])
+col11, col22,col33 = st.columns([1,1,1])
 with col22:
-    st.write('## 白熊翻译')
+    st.write('## 白熊翻译☯')
 
 # st.write('## 白熊翻译')
 language = ['英语', '日语', '德语', '法语','火星文','维吾尔语','藏语']
