@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+# import langchain
 from langchain_community.cache import SQLiteCache
 from langchain_core.globals import set_llm_cache
 from langchain_core.prompts import ChatPromptTemplate
@@ -13,15 +14,15 @@ with col2:
     button = st.button('翻译', type='primary')
 
 set_llm_cache(SQLiteCache('cache.db'))
-load_dotenv()
+
+# load_dotenv()
 llm = ChatOpenAI(
     base_url='https://api.deepseek.com',
+    api_key=st.secrets['DEEPSEEK_API_KEY'],#授权密钥，替换成你自己的密钥
     model='deepseek-chat',
     temperature=0.2,
     max_tokens=1024,
 )
-
-language = '英文'
 
 prompt = ChatPromptTemplate.from_messages([
     ('system','你是一个专业的翻译助手，擅长给出信达雅的翻译。'),
