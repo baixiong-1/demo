@@ -4,6 +4,7 @@ from langchain_core.globals import set_llm_cache
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 import streamlit as st
+
 st.write('## 白熊翻译')
 language = ['英语', '日语', '德语', '法语']
 targets = st.multiselect(label='目标语言:',options = language, placeholder = '')
@@ -16,10 +17,10 @@ with col2:
 
 set_llm_cache(SQLiteCache('cache.db'))
 
-# load_dotenv()
+load_dotenv()
 llm = ChatOpenAI(
     base_url='https://api.deepseek.com',
-    api_key=st.secrets['DEEPSEEK_API_KEY'],#授权密钥，替换成你自己的密钥
+    # api_key=st.secrets['DEEPSEEK_API_KEY'],#授权密钥，替换成你自己的密钥
     model='deepseek-chat',
     temperature=0.2,
     max_tokens=1024,
@@ -31,11 +32,10 @@ prompt = ChatPromptTemplate.from_messages([
 ])
 
 chain = prompt | llm
-
-
 if button and content.strip() and targets:
-    for target in targets:
-        msg = chain.invoke({'target': target, 'content': content})
-        st.warning(f'{target}:{msg.content}')
+    with st.spinner('翻译中,请稍等...', show_time=True):  # type: ignore
+        for target in targets:
+            msg = chain.invoke({'target': target, 'content': content})
+            st.warning(f'{target}:{msg.content}')
 
 
