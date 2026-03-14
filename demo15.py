@@ -5,15 +5,27 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 import streamlit as st
 
-st.write('## 白熊翻译')
-language = ['英语', '日语', '德语', '法语']
-targets = st.multiselect(label='目标语言:',options = language, placeholder = '')
+col11, col22,col33 = st.columns([1.2,1,1])
+with col22:
+    st.write('## 白熊翻译')
 
-col1, col2 = st.columns([4, 1])
-with col1:
-    content = st.text_input(label='',placeholder='请输入翻译内容：',label_visibility='collapsed')
+# st.write('## 白熊翻译')
+language = ['英语', '日语', '德语', '法语','火星文','维吾尔语','藏语']
+targets = st.multiselect(label='',placeholder='选择目标语言',options = language)
+
+# col1, col2 = st.columns([5,1])
+# with col1:
+#     content = st.text_input(label='',placeholder='请输入翻译内容：',label_visibility='collapsed')
+# with col2:
+#     button = st.button('翻译', type='primary')
+
+content = st.text_input(label='',placeholder='请输入翻译内容：',label_visibility='collapsed')
+
+
+col1, col2,col3 = st.columns([2.5,1,2.5])
 with col2:
-    button = st.button('翻译', type='primary')
+    button = st.button('翻译', type='primary',use_container_width=True)
+
 
 set_llm_cache(SQLiteCache('cache.db'))
 
@@ -32,10 +44,18 @@ prompt = ChatPromptTemplate.from_messages([
 ])
 
 chain = prompt | llm
-if button and content.strip() and targets:
-    with st.spinner('翻译中,请稍等...', show_time=True):  # type: ignore
-        for target in targets:
-            msg = chain.invoke({'target': target, 'content': content})
-            st.warning(f'{target}:{msg.content}')
+
+if button:
+    if content.strip() and targets:
+        with st.spinner('翻译中...', show_time=True):  # type: ignore
+            for target in targets:
+                msg = chain.invoke({'target': target, 'content': content})
+                st.warning(f'{target}:{msg.content}')
+    elif content.strip():
+        st.write('- **请选择目标语言**')
+    elif targets:
+        st.write('- **请输入翻译内容**')
+    else:
+        st.write('- **请输入翻译内容和选择目标语言**')
 
 
